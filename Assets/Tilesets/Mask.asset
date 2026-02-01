@@ -11,8 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a02be4525775fa4bbf63ebb8e4f8726, type: 3}
   m_Name: Mask
-  m_EditorClassIdentifier: Assembly-CSharp::TileTypes
-  m_Sprite: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::CustomDataTile
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -34,4 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  types: 0
+  types: 2

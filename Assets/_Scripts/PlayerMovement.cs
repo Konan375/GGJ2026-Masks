@@ -1,10 +1,13 @@
+using Unity.VectorGraphics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    public Object nextScene;
     public Rigidbody2D rb;
     public float movespeed = 5f;
     public float jumpforce = 10f;
@@ -13,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     public float iceFriction = 2f;
     public float normalFriction = 20f;
     private float currentFriction;
+    [Header("Web Settings")]
+    public float stickyFriction = 40f;
 
     [Header("Wall Slide Settings")]
     public float wallSlidingSpeed = 2f;
@@ -45,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         extraJumps = extraJumpsValue;
+        currentFriction = normalFriction;
     }
 
     // Update is called once per frame
@@ -63,7 +69,9 @@ public class PlayerMovement : MonoBehaviour
         CheckStatus();
         Vector2 currentVel = rb.linearVelocity;
 
-        currentVel.x = _moveDirection.x * movespeed;
+        float targetX = _moveDirection.x * movespeed;
+
+        currentVel.x = Mathf.Lerp(currentVel.x, targetX, currentFriction * Time.fixedDeltaTime);
         if (IsPushingAgainstWall()) {
             if (currentVel.y < 0)
             {
@@ -117,7 +125,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckStatus()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (hit != null)
+        {
+            Vector3Int gridPos = itemTileMap.WorldToCell(groundCheck.position);
+            TileBase tile = itemTileMap.GetTile(gridPos);
+
+            if (tile is CustomDataTile data)
+            {
+                isGrounded = (data.types == Tiles.Ground || data.types == Tiles.Slippery);
+
+            }
+            else
+            {
+                isGrounded = true;
+            }
+        }
+
+        else isGrounded = false;
+
+
 
         if (isGrounded)
         {
@@ -133,21 +161,47 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        Vector3Int gridPos = itemTileMap.WorldToCell(transform.position);
-        if (collision.gameObject.TryGetComponent(out TileTypes identity))
+
+        //print("collided!");
+
+        Vector3 hitpoint = collision.contacts[0].point;
+        Vector3Int gridPos = itemTileMap.WorldToCell(hitpoint - (Vector3)collision.contacts[0].normal *0.1f);   
+        TileBase tile = itemTileMap.GetTile(gridPos);
+        if (tile is CustomDataTile data)
         {
-            print("success");
-            switch (identity.types)
-            {
-                case Tiles.Slippery:
-
-                    break;
-
-                case Tiles.Collectible:
-                    Debug.Log($"Picked up: {identity.types}");
-                    itemTileMap.SetTile(gridPos, null);
-                    break;
-            }
+            HandleTileLogic(data.types, itemTileMap, gridPos);
         }
+
+    }
+    void HandleTileLogic(Tiles type, Tilemap tilemap, Vector3Int gridPos)
+    {
+        print("hello!");
+        switch (type)
+        {
+            case Tiles.Slippery:
+                print("Slippy");
+                currentFriction = iceFriction;
+                break;
+            case Tiles.Sticky:
+                print("Sticky");
+                currentFriction = stickyFriction;
+                break;
+            case Tiles.Collectible:
+                tilemap.SetTile(gridPos, null);
+                break;
+            case Tiles.Spikes:
+                transform.position = transform.parent.position;
+                break;
+            case Tiles.End:
+                print("You did it");
+                SceneManager.LoadScene(nextScene.name);
+                break;
+
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        currentFriction = normalFriction;
     }
 }
