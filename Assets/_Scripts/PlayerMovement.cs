@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using TMPro;
-using UnityEditor.AdaptivePerformance.Editor;
 using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
@@ -13,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     //For loading scenes from strings given here
     [Header("Level List")]
     public int currentLevelIndex = 0;
-    public string[] levelNames = { "TilesetTesting", "Zoo" };
+    public string[] levelNames = { "Swamp", "JAMLEV" };
    
     private List<Vector3Int> collectedTilesPositions = new List<Vector3Int>();
     public TileBase collectibleTile;
