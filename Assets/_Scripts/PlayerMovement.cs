@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor.AdaptivePerformance.Editor;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     public int currentLevelIndex = 0;
     public string[] levelNames = { "TilesetTesting", "Zoo" };
    
+    private List<Vector3Int> collectedTilesPositions = new List<Vector3Int>();
+    public TileBase collectibleTile;
     // Basic movement and physics variables
     public Rigidbody2D rb;
     public float movespeed = 5f;
@@ -259,7 +262,6 @@ public class PlayerMovement : MonoBehaviour
     }
     void HandleTileLogic(Tiles type, Tilemap tilemap, Vector3Int gridPos)
     {
-        print(type);
         switch (type)
         {
             case Tiles.Ground:
@@ -274,12 +276,17 @@ public class PlayerMovement : MonoBehaviour
                 currentFriction = stickyFriction;
                 break;
             case Tiles.Collectible:
+                if(!collectedTilesPositions.Contains(gridPos))
+                {
+                    collectedTilesPositions.Add(gridPos);
+                }
                 tilemap.SetTile(gridPos, null);
                 break;
             case Tiles.Spikes:
-                transform.position = transform.parent.position;
+                RespawnPlayer();
                 break;
             case Tiles.End:
+                print("You Win");
                 int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
 
                 int nextIndex = (currentBuildIndex == 0) ? 1 : 0;;
@@ -294,12 +301,24 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3Int gridPos = itemTileMap.WorldToCell(transform.position);
         TileBase tile = itemTileMap.GetTile(gridPos);
-        print(tile);
+        //print(tile);
         if (tile is CustomDataTile data && (data.types == Tiles.End ||
             data.types == Tiles.Collectible))
         {
             HandleTileLogic(data.types, itemTileMap, gridPos);
         }
+    }
+    private void RespawnPlayer()
+    {
+        transform.position = transform.parent.position;
+        foreach (Vector3Int pos in collectedTilesPositions)
+        {
+            itemTileMap.SetTile(pos, collectibleTile);
+        }
+
+        collectedTilesPositions.Clear();
+        rb.linearVelocity = Vector2.zero;
+
     }
 
 }

@@ -336,7 +336,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: eda46a15d46566a41bad20234dc61e36, type: 2}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 184ffc38279c39e42bd26fea4109b038, type: 2}
+    m_Data: {fileID: 11400000, guid: ea54b5c3d6b792f4fa9c59273de5b275, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 943b4540000cd7648b087b6e40a0a8e4, type: 2}
   - m_RefCount: 1
@@ -408,6 +408,8 @@ Tilemap:
   m_TileColorArray:
   - m_RefCount: 21
     m_Data: {r: 1, g: 1, b: 1, a: 1}
+  - m_RefCount: 0
+    m_Data: {r: 1.67e-43, g: 1.67e-43, b: 1.67e-43, a: 1.67e-43}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -612,7 +614,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1921015446671597765, guid: 1827cb8a78608b345a690202295ab466, type: 3}
   m_PrefabInstance: {fileID: 8398840765739446042}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7251069852904295897
+--- !u!114 &1598731697700871890
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
