@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public Object nextScene;
+    [Header("Level List")]
+    public int currentLevelIndex = 0;
+    public string[] levelNames = { "TilesetTesting", "Zoo" };
     public Rigidbody2D rb;
     public float movespeed = 5f;
     public float jumpforce = 10f;
@@ -42,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Input References")]
     public InputActionReference move;
     public InputActionReference jump;
+    public InputActionReference escape;
 
     private Vector2 _moveDirection;
     private Vector2 _jumpDirection;
@@ -62,6 +65,10 @@ public class PlayerMovement : MonoBehaviour
             HandleJump();
         }
 
+        if (escape.action.triggered) 
+        {
+            Application.Quit();
+        }
     }
 
     private void FixedUpdate()
@@ -175,15 +182,12 @@ public class PlayerMovement : MonoBehaviour
     }
     void HandleTileLogic(Tiles type, Tilemap tilemap, Vector3Int gridPos)
     {
-        print("hello!");
         switch (type)
         {
             case Tiles.Slippery:
-                print("Slippy");
                 currentFriction = iceFriction;
                 break;
             case Tiles.Sticky:
-                print("Sticky");
                 currentFriction = stickyFriction;
                 break;
             case Tiles.Collectible:
@@ -193,8 +197,10 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.parent.position;
                 break;
             case Tiles.End:
-                print("You did it");
-                SceneManager.LoadScene(nextScene.name);
+                int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
+
+                int nextIndex = (currentBuildIndex == 0) ? 1 : 0;;
+                SceneManager.LoadScene(nextIndex);
                 break;
 
         }
