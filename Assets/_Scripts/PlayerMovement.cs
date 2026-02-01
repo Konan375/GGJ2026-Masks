@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
         CheckStatus();
         Vector2 currentVel = rb.linearVelocity;
 
-        currentVel.x = -_moveDirection.x * movespeed;
+        currentVel.x = _moveDirection.x * movespeed;
         print(IsPushingAgainstWall());
         if (IsPushingAgainstWall()) {
             if (currentVel.y < 0)
@@ -70,7 +70,6 @@ public class PlayerMovement : MonoBehaviour
 
                 isWallSliding = false;
                 currentVel.y *= wallClimbDamping;
-                print(currentVel.y);
             }
         }
         else
