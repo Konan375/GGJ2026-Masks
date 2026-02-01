@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEditor.AdaptivePerformance.Editor;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -27,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ice Settings")]
     public float iceFriction = 2f;
     public float normalFriction = 20f;
+    public bool isTouchingIce;
+    private float smootheFriction;
+    private float frictionVelocity;
     /// <summary>
     /// Variable for web interaction
     /// </summary>
@@ -124,6 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        smootheFriction = Mathf.Lerp(smootheFriction, currentFriction, 5f * Time.fixedDeltaTime);
         CheckStatus();
         ///Sets variable for the current speed to act upon 
         Vector2 currentVel = rb.linearVelocity;
@@ -131,7 +137,16 @@ public class PlayerMovement : MonoBehaviour
         // but doesnt change it until later
         float targetX = _moveDirection.x * movespeed;
         ///this sets the velocity depending on the tile player is standing on.
-        currentVel.x = Mathf.Lerp(currentVel.x, targetX, currentFriction * Time.fixedDeltaTime);
+        if (isGrounded)
+        {
+            currentVel.x = Mathf.Lerp(currentVel.x, targetX, smootheFriction * Time.fixedDeltaTime);
+        }
+
+        else
+        {
+            float airControlAbility = 0.2f;
+            currentVel.x = Mathf.Lerp(currentVel.x, targetX, (smootheFriction * airControlAbility) * Time.fixedDeltaTime);
+        }
         if (IsPushingAgainstWall()) {
             if (currentVel.y < 0)
             {
@@ -159,8 +174,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
             return false;
-        bool isTouchingRight = Physics2D.OverlapCircle(WallCheckR.position, groundCheckRadius, groundLayer);
-        bool isTouchingLeft = Physics2D.OverlapCircle(WallCheckL.position, groundCheckRadius, groundLayer);
+        bool isTouchingRight = (Physics2D.OverlapCircle(WallCheckR.position, groundCheckRadius, groundLayer) && !isTouchingIce);
+        bool isTouchingLeft = (Physics2D.OverlapCircle(WallCheckL.position, groundCheckRadius, groundLayer) && !isTouchingIce);
         return (isTouchingRight && _moveDirection.x >0.1f) || (isTouchingLeft && _moveDirection.x < -0.1f);
     }
     /// <summary>
@@ -244,9 +259,15 @@ public class PlayerMovement : MonoBehaviour
     }
     void HandleTileLogic(Tiles type, Tilemap tilemap, Vector3Int gridPos)
     {
+        print(type);
         switch (type)
         {
+            case Tiles.Ground:
+                isTouchingIce = false;
+                currentFriction = normalFriction;
+                break;
             case Tiles.Slippery:
+                isTouchingIce = true;
                 currentFriction = iceFriction;
                 break;
             case Tiles.Sticky:
@@ -268,11 +289,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        currentFriction = normalFriction;
-    }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
 
@@ -286,13 +302,4 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if (groundCheck != null)
-        {
-            // Red if in air, Green if grounded
-            Gizmos.color = isGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-    }
 }
