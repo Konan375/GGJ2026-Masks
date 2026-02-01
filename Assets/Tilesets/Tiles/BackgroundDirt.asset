@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a02be4525775fa4bbf63ebb8e4f8726, type: 3}
-  m_Name: obstStone
+  m_Name: BackgroundDirt
   m_EditorClassIdentifier: Assembly-CSharp::CustomDataTile
-  m_Sprite: {fileID: 21300000, guid: b7ad7405d64b4b44ea6f5369b014822a, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 6a73846d83ed9e647ad0ec7b0ffc7a31, type: 3}
+  m_Color: {r: 0.51482475, g: 0.51482475, b: 0.51482475, a: 1}
   m_Transform:
     e00: 1
     e01: 0

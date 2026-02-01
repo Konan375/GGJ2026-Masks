@@ -84,13 +84,29 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 09e5108ca0fd13d41bd0e00d0d567321, type: 3}
+    - target: {fileID: 3932645084374716369, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4422141951080710751, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6708468599218799812, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: itemTileMap
       value: 
       objectReference: {fileID: 5926718994109165577, guid: 7f2276aaf19949c489352d3a617f243c, type: 3}
+    - target: {fileID: 7557625943886308792, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8864828514781724348, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8864828514781724348, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6708468599218799812, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
@@ -101,9 +117,19 @@ PrefabInstance:
       insertIndex: 1
       addedObject: {fileID: 6903154109219309110}
   m_SourcePrefab: {fileID: 100100000, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+--- !u!4 &853568506313068164 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2965366043600370360, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+  m_PrefabInstance: {fileID: 2521845075563934780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3552827898344133710 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1418997385021366386, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+  m_PrefabInstance: {fileID: 2521845075563934780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5683511550118308602 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7791375893811683014, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
   m_PrefabInstance: {fileID: 2521845075563934780}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6483307889210362496 stripped
@@ -123,10 +149,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38a8d95e03410844a52e97a74a7525e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  nextScene: {fileID: 102900000, guid: 5a3d665d6f3f97947b86607b5e02d6eb, type: 3}
+  currentLevelIndex: 0
+  levelNames:
+  - TilesetTesting
+  - Zoo
   rb: {fileID: 8416055946688285535}
   movespeed: 5
-  jumpforce: 10
+  landTileMap: {fileID: 0}
   itemTileMap: {fileID: 0}
   iceFriction: 2
   normalFriction: 20
@@ -135,19 +164,26 @@ MonoBehaviour:
   wallClimbDamping: 0.5
   isWallSliding: 0
   hangTime: 0.2
-  groundCheck: {fileID: 0}
-  WallCheckR: {fileID: 0}
-  WallCheckL: {fileID: 0}
+  groundCheck: {fileID: 8033047609879692687}
+  WallCheckR: {fileID: 5683511550118308602}
+  WallCheckL: {fileID: 853568506313068164}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+  jumpforce: 10
   extraJumpsValue: 1
   extraJumps: 0
   isGrounded: 0
   isTouchingWall: 0
-  move: {fileID: 0}
-  jump: {fileID: 0}
+  move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  jump: {fileID: -3017090869951377423, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  escape: {fileID: -7778757256863188031, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!4 &8033047609879692687 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5585724135018885555, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+  m_PrefabInstance: {fileID: 2521845075563934780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!50 &8416055946688285535 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 6211786560978108259, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
