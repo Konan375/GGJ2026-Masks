@@ -193,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.parent.position;
                 break;
             case Tiles.End:
+                print("You did it");
                 SceneManager.LoadScene(nextScene.name);
                 break;
 
