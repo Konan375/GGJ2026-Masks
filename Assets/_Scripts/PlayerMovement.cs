@@ -1,11 +1,13 @@
+using Unity.VectorGraphics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    public Object nextScene;
     public Rigidbody2D rb;
     public float movespeed = 5f;
     public float jumpforce = 10f;
@@ -124,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         if (hit != null)
-        { 
+        {
             Vector3Int gridPos = itemTileMap.WorldToCell(groundCheck.position);
             TileBase tile = itemTileMap.GetTile(gridPos);
 
@@ -138,6 +140,8 @@ public class PlayerMovement : MonoBehaviour
                 isGrounded = true;
             }
         }
+
+        else isGrounded = false;
 
 
 
@@ -183,6 +187,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.parent.position;
                 break;
             case Tiles.End:
+                SceneManager.LoadScene(nextScene.name);
                 break;
 
         }

@@ -556,6 +556,10 @@ PrefabInstance:
       value: PlayerHolder
       objectReference: {fileID: 0}
     - target: {fileID: 9216088982440571128, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: nextScene
+      value: 
+      objectReference: {fileID: 102900000, guid: 16d84e500bc2e7f449140035abf1daa2, type: 3}
+    - target: {fileID: 9216088982440571128, guid: 1827cb8a78608b345a690202295ab466, type: 3}
       propertyPath: itemTileMap
       value: 
       objectReference: {fileID: 1295907379}
