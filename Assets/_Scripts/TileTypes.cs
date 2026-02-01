@@ -1,9 +1,6 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
-public enum Tiles { Spikes, Collectible, Slippery, End }
-[CreateAssetMenu(fileName = "New Item Tile", menuName = "Tiles/Types")]
-
-public class TileTypes : Tile
+public enum Tiles { Ground, Spikes, Collectible, Slippery, End }
+public class TileTypes : MonoBehaviour
 {
-    public Tiles types;
+    public Tiles tiles;
 }
