@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: mobAcidDrop
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: 21300000, guid: c034e2527ea6e75488b2495b2fb50ac4, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.49803922}
   m_Transform:
     e00: 1
     e01: 0
