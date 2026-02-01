@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: hazAcidDeep
   m_EditorClassIdentifier: Assembly-CSharp::CustomDataTile
   m_Sprite: {fileID: 21300000, guid: 73312ee7c12947847810b68aad94c42e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.49803922}
   m_Transform:
     e00: 1
     e01: 0
