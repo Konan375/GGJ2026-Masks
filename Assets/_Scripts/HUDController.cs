@@ -8,9 +8,9 @@ public class HUDController : MonoBehaviour
     public PlayerState playerState;
 
     [Header("Masks UI (4 slots)")]
-    public Image[] maskSlots = new Image[4];          // icons
-    public Image cooldownOverlay;                     // your CoolDownOverlay Image
-    public RectTransform activeFrame;                 // optional (we can add later)
+    public Image[] maskSlots = new Image[4];
+    public Image cooldownOverlay;
+    public RectTransform activeFrame;
 
     [Header("Score UI (optional)")]
     public TMP_Text scoreText;
@@ -35,45 +35,59 @@ public class HUDController : MonoBehaviour
         Refresh();
     }
 
+    // Jam-safe: if event wiring ever fails, HUD still updates
+    private void Update()
+    {
+        Refresh();
+    }
+
     public void Refresh()
     {
         if (playerState == null) return;
 
         int active = (int)playerState.activeMask;
 
-        // --- Score (if assigned) ---
+        // Score
         if (scoreText != null)
             scoreText.text = playerState.coins.ToString();
 
-        // --- Health text (temporary until hearts) ---
+        // Health text (temporary)
         if (healthText != null)
             healthText.text = $"{playerState.currentHealth}/{playerState.maxHealth}";
 
-        // --- Masks owned / active visual ---
-        for (int i = 0; i < maskSlots.Length && i < 4; i++)
+        // Dim masks if not owned
+        for (int i = 0; i < 4 && i < maskSlots.Length; i++)
         {
             if (maskSlots[i] == null) continue;
 
-            // Dim if not owned
-            var c = maskSlots[i].color;
+            Color c = maskSlots[i].color;
             c.a = playerState.masksOwned[i] ? 1f : 0.25f;
             maskSlots[i].color = c;
         }
 
-        // --- Cooldown overlay: move it to active slot and set fill ---
-        if (cooldownOverlay != null && active < maskSlots.Length && maskSlots[active] != null)
+        // Cooldown overlay on active slot
+        if (cooldownOverlay != null &&
+            active >= 0 && active < 4 &&
+            active < maskSlots.Length &&
+            maskSlots[active] != null)
         {
-            // Parent overlay under active slot so it sits on top of that icon
             cooldownOverlay.transform.SetParent(maskSlots[active].transform, false);
 
             float remain = playerState.cooldownRemaining[active];
             float dur = Mathf.Max(0.01f, playerState.cooldownDuration[active]);
 
-            // Fill amount: 1 = full overlay (cooldown just started), 0 = ready
             cooldownOverlay.fillAmount = remain / dur;
-
-            // Hide overlay when ready
             cooldownOverlay.gameObject.SetActive(remain > 0f);
+        }
+
+        // Optional active frame highlight
+        if (activeFrame != null &&
+            active >= 0 && active < 4 &&
+            active < maskSlots.Length &&
+            maskSlots[active] != null)
+        {
+            activeFrame.SetParent(maskSlots[active].transform, false);
+            activeFrame.anchoredPosition = Vector2.zero;
         }
     }
 }

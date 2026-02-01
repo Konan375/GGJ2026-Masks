@@ -24,8 +24,14 @@ public class PlayerState : MonoBehaviour
 
     [Header("Cooldowns (seconds)")]
     public float[] cooldownDuration = new float[4] { 5f, 6f, 7f, 8f };
+
+    // Not shown in inspector; runtime values only
     [NonSerialized] public float[] cooldownRemaining = new float[4];
 
+    [Header("Debug Input (temporary)")]
+    public bool enableDebugInput = true;
+
+    // HUDController subscribes to this
     public event Action OnStateChanged;
 
     private void Awake()
@@ -37,27 +43,33 @@ public class PlayerState : MonoBehaviour
 
     private void Update()
     {
-        // Tick cooldowns down each frame
-        bool changed = TickCooldowns();
+        // Tick cooldowns every frame
+        bool cooldownChanged = TickCooldowns();
 
-        // Jam test controls (you can remove later)
-        if (Input.GetKeyDown(KeyCode.Q))
+        // Debug controls (for testing HUD fast)
+        if (enableDebugInput)
         {
-            CycleMask(-1);
-            changed = true;
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            CycleMask(1);
-            changed = true;
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TryUseActiveMaskAbility();
-            changed = true;
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                CycleMask(-1);
+                // CycleMask already calls RaiseChanged()
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                CycleMask(1);
+                // CycleMask already calls RaiseChanged()
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TryUseActiveMaskAbility();
+                // TryUseActiveMaskAbility already calls RaiseChanged()
+            }
         }
 
-        if (changed)
+        // If only cooldowns changed this frame, notify HUD
+        if (cooldownChanged)
             RaiseChanged();
     }
 
@@ -95,9 +107,9 @@ public class PlayerState : MonoBehaviour
         // direction should be -1 or +1
         if (direction == 0) return;
 
-        int start = (int)activeMask;
-        int idx = start;
+        int idx = (int)activeMask;
 
+        // Try up to 4 times to find an owned mask
         for (int attempts = 0; attempts < 4; attempts++)
         {
             idx = (idx + direction + 4) % 4;
