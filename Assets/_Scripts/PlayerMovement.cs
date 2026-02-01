@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     public float iceFriction = 2f;
     public float normalFriction = 20f;
     private float currentFriction;
+    [Header("Web Settings")]
+    public float stickyFriction = 40f;
 
     [Header("Wall Slide Settings")]
     public float wallSlidingSpeed = 2f;
@@ -179,6 +181,10 @@ public class PlayerMovement : MonoBehaviour
             case Tiles.Slippery:
                 print("Slippy");
                 currentFriction = iceFriction;
+                break;
+            case Tiles.Sticky:
+                print("Sticky");
+                currentFriction = stickyFriction;
                 break;
             case Tiles.Collectible:
                 tilemap.SetTile(gridPos, null);
