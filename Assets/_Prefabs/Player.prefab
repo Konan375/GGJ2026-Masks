@@ -121,7 +121,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8864828514781724348}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.56, y: 4.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -130,7 +130,7 @@ Transform:
   - {fileID: 7791375893811683014}
   - {fileID: 2965366043600370360}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3868609385481974569
 SpriteRenderer:
   serializedVersion: 2
@@ -199,32 +199,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 8864828514781724348}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03966df67f036c443934fa9aa9d5334c, type: 3}
+  m_Script: {fileID: 11500000, guid: b38a8d95e03410844a52e97a74a7525e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  currentLevelIndex: 0
+  levelNames:
+  - TilesetTesting
+  - Zoo
   rb: {fileID: 6211786560978108259}
-  movespeed: 3
+  movespeed: 5
   jumpforce: 10
   itemTileMap: {fileID: 0}
   iceFriction: 2
   normalFriction: 20
+  stickyFriction: 40
   wallSlidingSpeed: 2
-  wallClimbDamping: 0.95
+  wallClimbDamping: 0.5
   isWallSliding: 0
-  hangTime: 0.15
+  hangTime: 0.2
   groundCheck: {fileID: 5585724135018885555}
   WallCheckR: {fileID: 7791375893811683014}
   WallCheckL: {fileID: 2965366043600370360}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   extraJumpsValue: 1
   extraJumps: 0
   isGrounded: 0
   isTouchingWall: 0
   move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   jump: {fileID: -3017090869951377423, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  escape: {fileID: -7778757256863188031, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!50 &6211786560978108259
 Rigidbody2D:
   serializedVersion: 5
