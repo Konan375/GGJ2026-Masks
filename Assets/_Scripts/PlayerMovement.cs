@@ -318,6 +318,7 @@ public class PlayerMovement : MonoBehaviour
 
         collectedTilesPositions.Clear();
         rb.linearVelocity = Vector2.zero;
+        isTouchingIce = false;
 
     }
 
