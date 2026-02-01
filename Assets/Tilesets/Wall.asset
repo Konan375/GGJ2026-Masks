@@ -31,6 +31,6 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 1
-  m_InstancedGameObject: {fileID: 0}
+  m_InstancedGameObject: {fileID: 738932379971435475, guid: 1e7b62796995a304fa24ffb41ecc4598, type: 3}
   m_Flags: 1
   m_ColliderType: 1
