@@ -451,6 +451,11 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!4 &837551775 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5683511550118308602, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+  m_PrefabInstance: {fileID: 1185955263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1022467479
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,6 +713,38 @@ PrefabInstance:
     - target: {fileID: 3552827898344133710, guid: 1827cb8a78608b345a690202295ab466, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: jump
+      value: 
+      objectReference: {fileID: -3017090869951377423, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: move
+      value: 
+      objectReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: escape
+      value: 
+      objectReference: {fileID: -7778757256863188031, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: WallCheckL
+      value: 
+      objectReference: {fileID: 1473995369}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: WallCheckR
+      value: 
+      objectReference: {fileID: 837551775}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: groundCheck
+      value: 
+      objectReference: {fileID: 1361383713}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: itemTileMap
+      value: 
+      objectReference: {fileID: 1295907379}
+    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 9216088982440571128, guid: 1827cb8a78608b345a690202295ab466, type: 3}
       propertyPath: nextScene
@@ -2929,6 +2966,16 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!4 &1361383713 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8033047609879692687, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+  m_PrefabInstance: {fileID: 1185955263}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1473995369 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 853568506313068164, guid: 1827cb8a78608b345a690202295ab466, type: 3}
+  m_PrefabInstance: {fileID: 1185955263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1760771479
 GameObject:
   m_ObjectHideFlags: 0
