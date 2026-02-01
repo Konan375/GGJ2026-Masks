@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2028175100135601741}
   - component: {fileID: 4710762170425239507}
-  - component: {fileID: 984853966606636304}
+  - component: {fileID: -5789159989163892135}
   m_Layer: 0
   m_Name: hazIce
   m_TagString: Untagged
@@ -44,10 +44,10 @@ SpriteRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
@@ -92,7 +92,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &984853966606636304
+--- !u!114 &-5789159989163892135
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 168958658187352686}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b38a6224a50b3a24e953ec2a529111bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 0642c408cac8223489f2cd66a049d90c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmptyMarker
+  m_EditorClassIdentifier: Assembly-CSharp::TileScript
+  type: 2

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -7,6 +8,11 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     public float movespeed = 5f;
     public float jumpforce = 10f;
+    public Tilemap itemTileMap;
+    [Header("Ice Settings")]
+    public float iceFriction = 2f;
+    public float normalFriction = 20f;
+    private float currentFriction;
 
     [Header("Wall Slide Settings")]
     public float wallSlidingSpeed = 2f;
@@ -58,7 +64,6 @@ public class PlayerMovement : MonoBehaviour
         Vector2 currentVel = rb.linearVelocity;
 
         currentVel.x = _moveDirection.x * movespeed;
-        print(IsPushingAgainstWall());
         if (IsPushingAgainstWall()) {
             if (currentVel.y < 0)
             {
@@ -124,5 +129,25 @@ public class PlayerMovement : MonoBehaviour
             hangTimeCounter -= Time.deltaTime;
         }
 
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Vector3Int gridPos = itemTileMap.WorldToCell(transform.position);
+        if (collision.gameObject.TryGetComponent(out TileTypes identity))
+        {
+            print("success");
+            switch (identity.types)
+            {
+                case Tiles.Slippery:
+
+                    break;
+
+                case Tiles.Collectible:
+                    Debug.Log($"Picked up: {identity.types}");
+                    itemTileMap.SetTile(gridPos, null);
+                    break;
+            }
+        }
     }
 }

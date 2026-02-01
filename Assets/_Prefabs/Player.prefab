@@ -106,7 +106,6 @@ GameObject:
   - component: {fileID: 6708468599218799812}
   - component: {fileID: 6211786560978108259}
   - component: {fileID: 3677676318052041559}
-  - component: {fileID: 5413477912047642655}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -143,10 +142,10 @@ SpriteRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
@@ -206,6 +205,9 @@ MonoBehaviour:
   rb: {fileID: 6211786560978108259}
   movespeed: 3
   jumpforce: 10
+  itemTileMap: {fileID: 0}
+  iceFriction: 2
+  normalFriction: 20
   wallSlidingSpeed: 2
   wallClimbDamping: 0.95
   isWallSliding: 0
@@ -287,16 +289,3 @@ CapsuleCollider2D:
   m_Offset: {x: 0.00018632412, y: -0.029802084}
   m_Size: {x: 0.88710546, y: 0.94039583}
   m_Direction: 0
---- !u!114 &5413477912047642655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8864828514781724348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd718f1653102144e8c04de054581b94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemDetection
-  itemTilemap: {fileID: 0}
