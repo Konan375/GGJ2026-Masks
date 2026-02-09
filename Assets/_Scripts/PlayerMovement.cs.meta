@@ -1,2 +1,21 @@
 fileFormatVersion: 2
 guid: b38a8d95e03410844a52e97a74a7525e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - collectibleTile: {instanceID: 0}
+  - rb: {instanceID: 0}
+  - landTileMap: {instanceID: 0}
+  - itemTileMap: {instanceID: 0}
+  - groundCheck: {instanceID: 0}
+  - WallCheckR: {instanceID: 0}
+  - WallCheckL: {instanceID: 0}
+  - move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - jump: {fileID: -3017090869951377423, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - escape: {fileID: -7778757256863188031, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

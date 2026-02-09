@@ -172,10 +172,6 @@ PrefabInstance:
       value: PlayerSpwan
       objectReference: {fileID: 0}
     - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
-      propertyPath: jumpforce
-      value: 7.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
       propertyPath: itemTileMap
       value: 
       objectReference: {fileID: 695856211}
@@ -183,10 +179,6 @@ PrefabInstance:
       propertyPath: landTileMap
       value: 
       objectReference: {fileID: 1546485212}
-    - target: {fileID: 6903154109219309110, guid: 1827cb8a78608b345a690202295ab466, type: 3}
-      propertyPath: collectibleTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 2ed4ee995528f9c43821a7d56af17902, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -218,7 +210,6 @@ GameObject:
   - component: {fileID: 1523177040}
   - component: {fileID: 1523177043}
   - component: {fileID: 1523177042}
-  - component: {fileID: 1523177041}
   m_Layer: 0
   m_Name: DeepBackground
   m_TagString: Untagged
@@ -241,44 +232,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 729042838}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!19719996 &1523177041
-TilemapCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523177039}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0
-  m_UseDelaunayMesh: 0
 --- !u!483693784 &1523177042
 TilemapRenderer:
   serializedVersion: 2

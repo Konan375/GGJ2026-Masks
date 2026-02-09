@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2965366043600370360, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.36
+      objectReference: {fileID: 0}
     - target: {fileID: 3868609385481974569, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -92,6 +96,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5585724135018885555, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.51
+      objectReference: {fileID: 0}
     - target: {fileID: 6708468599218799812, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: itemTileMap
       value: 
@@ -99,6 +107,10 @@ PrefabInstance:
     - target: {fileID: 7557625943886308792, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791375893811683014, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.319
       objectReference: {fileID: 0}
     - target: {fileID: 8864828514781724348, guid: 56686212764b9b2459d113ce7ea625f7, type: 3}
       propertyPath: m_Name
@@ -151,14 +163,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   currentLevelIndex: 0
   levelNames:
-  - TilesetTesting
-  - Zoo
+  - Swamp
+  - JAMLEV
+  collectibleTile: {fileID: 11400000, guid: 2ed4ee995528f9c43821a7d56af17902, type: 2}
   rb: {fileID: 8416055946688285535}
   movespeed: 5
   landTileMap: {fileID: 0}
   itemTileMap: {fileID: 0}
   iceFriction: 2
   normalFriction: 20
+  isTouchingIce: 0
   stickyFriction: 40
   wallSlidingSpeed: 2
   wallClimbDamping: 0.5
@@ -171,7 +185,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  jumpforce: 10
+  jumpforce: 7.8
   extraJumpsValue: 1
   extraJumps: 0
   isGrounded: 0

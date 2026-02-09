@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2965366043600370360}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallCheckL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7791375893811683014}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallCheckR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 09e5108ca0fd13d41bd0e00d0d567321, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -206,28 +206,36 @@ MonoBehaviour:
   levelNames:
   - TilesetTesting
   - Zoo
+  wallJumpXStrength: 0
+  collectibleTile: {fileID: 0}
   rb: {fileID: 6211786560978108259}
   movespeed: 5
-  jumpforce: 10
+  landTileMap: {fileID: 0}
   itemTileMap: {fileID: 0}
-  iceFriction: 2
-  normalFriction: 20
-  stickyFriction: 40
-  wallSlidingSpeed: 2
-  wallClimbDamping: 0.5
-  isWallSliding: 0
-  hangTime: 0.2
   groundCheck: {fileID: 5585724135018885555}
   WallCheckR: {fileID: 7791375893811683014}
   WallCheckL: {fileID: 2965366043600370360}
+  hangTime: 0.2
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
+  jumpHeightInTiles: 10
+  GravityScale: 2
   extraJumpsValue: 1
   extraJumps: 0
   isGrounded: 0
   isTouchingWall: 0
+  isWallJumping: 0
+  walljump: 0
+  wallJumpTimer: 0
+  iceFriction: 2
+  normalFriction: 20
+  isTouchingIce: 0
+  stickyFriction: 40
+  wallSlidingSpeed: 2
+  wallClimbDamping: 0.5
+  isWallSliding: 0
   move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   jump: {fileID: -3017090869951377423, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   escape: {fileID: -7778757256863188031, guid: 052faaac586de48259a63d0c4782560b, type: 3}

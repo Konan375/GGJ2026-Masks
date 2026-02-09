@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Level List")]
     public int currentLevelIndex = 0;
     public string[] levelNames = { "Swamp", "JAMLEV" };
-   
+    public float wallJumpXStrength;
     private List<Vector3Int> collectedTilesPositions = new List<Vector3Int>();
     public TileBase collectibleTile;
     // Basic movement and physics variables
@@ -25,6 +26,49 @@ public class PlayerMovement : MonoBehaviour
     [Header("TileMaps")]
     public Tilemap landTileMap;
     public Tilemap itemTileMap;
+    [Header("Grounded Settings")]
+    /// <summary>
+    /// transform for determining if the player is touching the ground
+    /// </summary>
+    public Transform groundCheck;
+    /// <summary>
+    /// Transform for determining if the player is touching a wall to the right
+    /// </summary>
+    public Transform WallCheckR;
+    /// <summary>
+    /// Transform for determining if the player is touching a wall to the left
+    /// </summary>
+    public Transform WallCheckL;
+    [SerializeField] private float hangTime = 0.2f;
+    private float hangTimeCounter;
+    /// <summary>
+    /// Float for the circle cast from transforms for checking if player is 
+    /// touching walls or ground
+    /// </summary>
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+    [Header("Jumping Settings")]
+    public float jumpHeightInTiles = 10f;
+    public float GravityScale = 2;
+    public int extraJumpsValue = 1;
+    /// <summary>
+    /// takes information from extraJumpsValue to jump double time
+    /// </summary>
+    public int extraJumps;
+    /// <summary>
+    /// Is the player on the ground
+    /// </summary>
+    public bool isGrounded;
+    /// <summary>
+    /// is the player touching the wall
+    /// </summary>
+    public bool isTouchingWall;
+
+    public bool isWallJumping;
+    public float walljump;
+    public float wallJumpTimer;
+
+    private int wallDir;
     /// <summary>
     /// Variables for ice interaction
     /// </summary>
@@ -50,45 +94,9 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     ///Maximum amount of time that player can jump after leaving edge
     /// </summary>
-    [Header("Grounded Settings")]
-    [SerializeField] private float hangTime = 0.2f;
-    private float hangTimeCounter;
-    /// <summary>
-    /// transform for determining if the player is touching the ground
-    /// </summary>
-    public Transform groundCheck;
-    /// <summary>
-    /// Transform for determining if the player is touching a wall to the right
-    /// </summary>
-    public Transform WallCheckR;
-    /// <summary>
-    /// Transform for determining if the player is touching a wall to the left
-    /// </summary>
-    public Transform WallCheckL;
-    /// <summary>
-    /// Float for the circle cast from transforms for checking if player is 
-    /// touching walls or ground
-    /// </summary>
-    public float groundCheckRadius = 0.2f;
-    public LayerMask groundLayer;
     /// <summary>
     /// How high the player jumps
     /// </summary>
-    [Header("Jumping Settings")]
-    public float jumpforce = 10f;
-    public int extraJumpsValue = 1;
-    /// <summary>
-    /// takes information from extraJumpsValue to jump double time
-    /// </summary>
-    public int extraJumps;
-    /// <summary>
-    /// Is the player on the ground
-    /// </summary>
-    public bool isGrounded;
-    /// <summary>
-    /// is the player touching the wall
-    /// </summary>
-    public bool isTouchingWall;
     /// <summary>
     /// Variables for keyboard control
     /// </summary>
@@ -103,6 +111,10 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _jumpDirection;
     private float currentFriction;
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -120,6 +132,7 @@ public class PlayerMovement : MonoBehaviour
         // Checks for jump action
         if (jump.action.WasPressedThisFrame())
         {
+
             HandleJump();
         }
         //Checks for quit button
@@ -138,22 +151,33 @@ public class PlayerMovement : MonoBehaviour
         // sets the movement speed based on the direction pressed,
         // but doesnt change it until later
         float targetX = _moveDirection.x * movespeed;
-        ///this sets the velocity depending on the tile player is standing on.
-        if (isGrounded)
+        if (!isWallJumping)
         {
-            currentVel.x = Mathf.Lerp(currentVel.x, targetX, smootheFriction * Time.fixedDeltaTime);
+            ///this sets the velocity depending on the tile player is standing on.
+            if (isGrounded)
+            {
+                currentVel.x = Mathf.Lerp(currentVel.x, targetX, smootheFriction * Time.fixedDeltaTime);
+
+            }
+
+            else
+            {
+                float airControlAbility = 0.2f;
+                currentVel.x = Mathf.Lerp(currentVel.x, targetX, (smootheFriction * airControlAbility) * Time.fixedDeltaTime);
+            }
         }
 
         else
         {
-            float airControlAbility = 0.2f;
-            currentVel.x = Mathf.Lerp(currentVel.x, targetX, (smootheFriction * airControlAbility) * Time.fixedDeltaTime);
+            wallJumpTimer -= Time.fixedDeltaTime;
+            isWallJumping = wallJumpTimer > 0f;
         }
         if (IsPushingAgainstWall()) {
             if (currentVel.y < 0)
             {
                 isWallSliding = true;
                 currentVel.y = Mathf.Max(currentVel.y, -wallSlidingSpeed);
+                wallJumpTimer = walljump;
             }
             else if (currentVel.y > 0)
             {
@@ -176,19 +200,43 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
             return false;
-        bool isTouchingRight = (Physics2D.OverlapCircle(WallCheckR.position, groundCheckRadius, groundLayer) && !isTouchingIce);
-        bool isTouchingLeft = (Physics2D.OverlapCircle(WallCheckL.position, groundCheckRadius, groundLayer) && !isTouchingIce);
-        return (isTouchingRight && _moveDirection.x >0.1f) || (isTouchingLeft && _moveDirection.x < -0.1f);
+        bool wallRight = IsTileIceAtPosition(WallCheckR.position, out bool iceRight);
+        bool wallLeft = IsTileIceAtPosition(WallCheckL.position, out bool iceLeft);
+
+        bool pushingRight = wallRight && _moveDirection.x > 0.1f && !iceRight;
+        bool pushingLeft = wallLeft && _moveDirection.x < -0.1f && !iceLeft;
+        wallDir = pushingLeft ? 1 : (pushingRight ? -1 : 0);
+        return pushingLeft || pushingRight;
     }
+///TODO: Put in tile script
+    private bool IsTileIceAtPosition(Vector3 checkPos, out bool isIce)
+    {
+        isIce = false;
+        Collider2D hit = Physics2D.OverlapCircle(checkPos, groundCheckRadius, groundLayer);
+        if (hit != null)
+        {
+            Vector3Int gridPos = landTileMap.WorldToCell(checkPos);
+            TileBase tile = landTileMap.GetTile(gridPos);
+            if (tile is CustomDataTile data)
+            {
+                isIce = (data.types == Tiles.Slippery);
+            }
+            return true;
+        }
+
+        return false;
+    }
+    
     /// <summary>
     /// Checks current varibles to ensure that the player can jump if the button is pressed
     /// </summary>
     private void HandleJump()
     {
+        isTouchingIce = false;
         if (isWallSliding)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpforce);
-            isWallSliding = false;
+            ApplyWallJumpForce();
+            return;
         }
         if (hangTimeCounter > 0f)
         {
@@ -205,18 +253,30 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void ApplyJumpForce()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpforce);
+        float gravity = Mathf.Abs(Physics2D.gravity.y * rb.gravityScale);
+        float jumpVelocity = MathF.Sqrt(2 * gravity * jumpHeightInTiles);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelocity);
+    }
+
+    private void ApplyWallJumpForce()
+    {
+        float gravity = Mathf.Abs(Physics2D.gravity.y * rb.gravityScale);
+        float jumpVelocity = MathF.Sqrt(2 * gravity * jumpHeightInTiles);
+        wallJumpXStrength = movespeed * 1.5f ;
+        rb.linearVelocity = new Vector2(wallDir * movespeed, jumpVelocity);
+        isWallJumping = true;
     }
     /// <summary>
     /// Checks tile player is standing on to determine if the player is able to jump
     /// </summary>
-    private void CheckStatus()
+   private void CheckStatus()
     {
+        Vector2 checkPos = (Vector2)groundCheck.position + Vector2.down * 0.1f;
         Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         if (hit != null)
         {
-            Vector3Int gridPos = landTileMap.WorldToCell(groundCheck.position);
+            Vector3Int gridPos = landTileMap.WorldToCell(checkPos);
             TileBase tile = landTileMap.GetTile(gridPos);
 
             if (tile is CustomDataTile data)
@@ -224,13 +284,18 @@ public class PlayerMovement : MonoBehaviour
                 isGrounded = (data.types == Tiles.Ground || data.types == Tiles.Slippery);
 
             }
-            else
+            else if (tile != null) 
             {
                 isGrounded = true;
+                currentFriction = normalFriction;
             }
         }
 
-        else isGrounded = false;
+        else
+        {
+            isTouchingIce = false;
+            isGrounded = false;
+        }
 
 
 
@@ -282,6 +347,8 @@ public class PlayerMovement : MonoBehaviour
                 tilemap.SetTile(gridPos, null);
                 break;
             case Tiles.Spikes:
+                currentFriction = normalFriction;
+                isTouchingIce = false;
                 RespawnPlayer();
                 break;
             case Tiles.End:
@@ -317,8 +384,69 @@ public class PlayerMovement : MonoBehaviour
 
         collectedTilesPositions.Clear();
         rb.linearVelocity = Vector2.zero;
-        isTouchingIce = false;
 
     }
+    private void OnDrawGizmos()
+    {
+        // 1. Set the color for the Ground Check
+        Gizmos.color = isGrounded ? Color.green : Color.red;
+        if (groundCheck != null)
+        {
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            Gizmos.DrawLine(groundCheck.position, (groundCheck.position + Vector3.down * 0.1f));
+        }
 
+        // 2. Set the color for Wall Checks
+        Gizmos.color = Color.blue;
+        if (WallCheckR != null)
+        {
+            Gizmos.DrawWireSphere(WallCheckR.position, groundCheckRadius);
+        }
+        if (WallCheckL != null)
+        {
+            Gizmos.DrawWireSphere(WallCheckL.position, groundCheckRadius);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+
+        // 1. Setup the physics constants
+        // We'll assume wallDir is 1 (jumping right) for the preview
+        float previewDir = 1f;
+        float g = Mathf.Abs(Physics2D.gravity.y * rb.gravityScale);
+        float vY = Mathf.Sqrt(2 * g * jumpHeightInTiles);
+        float vX = movespeed * previewDir;
+
+        // 2. Calculate total time of the jump (up and back down to start height)
+        // Formula: t = (2 * vY) / g
+        float totalTime = (2 * vY) / g;
+        int segments = 15; // How many dots/lines to draw
+        Vector3 previousPoint = transform.position;
+
+        Gizmos.color = Color.yellow;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            // Calculate time at this segment
+            float t = (totalTime / segments) * i;
+
+            // Kinematic formulas for X and Y position
+            float x = vX * t;
+            float y = (vY * t) - (0.5f * g * t * t);
+
+            Vector3 nextPoint = transform.position + new Vector3(x, y, 0);
+
+            // Draw the segment
+            Gizmos.DrawLine(previousPoint, nextPoint);
+            previousPoint = nextPoint;
+        }
+
+        // 3. Draw a little marker at the peak
+        Gizmos.color = Color.cyan;
+        float timeToPeak = vY / g;
+        float peakX = vX * timeToPeak;
+        Vector3 peakPos = transform.position + new Vector3(peakX, jumpHeightInTiles, 0);
+        Gizmos.DrawWireSphere(peakPos, 0.2f);
+    }
 }
