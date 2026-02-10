@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// is the player touching the wall
     /// </summary>
-    public bool isTouchingWall;
+    public bool isWallSlide;
 
     public bool isWallJumping;
     public float walljump;
@@ -196,6 +196,11 @@ public class PlayerMovement : MonoBehaviour
     /// and sends back true or false
     /// </summary>
     /// <returns></returns>
+
+    public void UpdateFriction(float friction)
+    {
+        currentFriction = friction;
+    }
     private bool IsPushingAgainstWall()
     {
         if (isGrounded)
@@ -374,7 +379,7 @@ public class PlayerMovement : MonoBehaviour
             HandleTileLogic(data.types, itemTileMap, gridPos);
         }
     }
-    private void RespawnPlayer()
+    public void RespawnPlayer()
     {
         transform.position = transform.parent.position;
         foreach (Vector3Int pos in collectedTilesPositions)
@@ -448,5 +453,10 @@ public class PlayerMovement : MonoBehaviour
         float peakX = vX * timeToPeak;
         Vector3 peakPos = transform.position + new Vector3(peakX, jumpHeightInTiles, 0);
         Gizmos.DrawWireSphere(peakPos, 0.2f);
+    }
+
+    public void EnableWallSlide()
+    {
+        isWallSlide = true;
     }
 }
