@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
 using System;
+using Unity.Cinemachine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -76,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
     public float iceFriction = 2f;
     public float normalFriction = 20f;
     public bool isTouchingIce;
-    private float smootheFriction;
+    private float smoothFriction;
     private float frictionVelocity;
     /// <summary>
     /// Variable for web interaction
@@ -111,6 +112,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _jumpDirection;
     private float currentFriction;
 
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -144,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        smootheFriction = Mathf.Lerp(smootheFriction, currentFriction, 5f * Time.fixedDeltaTime);
+        smoothFriction = Mathf.Lerp(smoothFriction, currentFriction, 5f * Time.fixedDeltaTime);
         CheckStatus();
         ///Sets variable for the current speed to act upon 
         Vector2 currentVel = rb.linearVelocity;
@@ -153,17 +155,32 @@ public class PlayerMovement : MonoBehaviour
         float targetX = _moveDirection.x * movespeed;
         if (!isWallJumping)
         {
+            bool isProvidingInput = Mathf.Abs(_moveDirection.x) > 0.01f;
             ///this sets the velocity depending on the tile player is standing on.
             if (isGrounded)
             {
-                currentVel.x = Mathf.Lerp(currentVel.x, targetX, smootheFriction * Time.fixedDeltaTime);
-
+                if (isProvidingInput && Mathf.Abs(currentVel.x) > movespeed && isTouchingIce)
+                {
+                    currentVel.x = Mathf.Lerp(currentVel.x, targetX, (smoothFriction * 0.5f) * Time.fixedDeltaTime);
+                }
+                else
+                {
+                    currentVel.x = Mathf.Lerp(currentVel.x, targetX, smoothFriction * Time.fixedDeltaTime);
+                }
             }
 
             else
             {
-                float airControlAbility = 0.2f;
-                currentVel.x = Mathf.Lerp(currentVel.x, targetX, (smootheFriction * airControlAbility) * Time.fixedDeltaTime);
+                if (Mathf.Abs(_moveDirection.x) > 0.01f)
+                {
+                    float airControllSpeed = 5f;
+                    currentVel.x = Mathf.Lerp(currentVel.x, targetX, airControllSpeed * Time.fixedDeltaTime);
+                }
+                else
+                {
+                    float airDriftDeceleration = 0.5f;
+                    currentVel.x = Mathf.Lerp(currentVel.x, 0, airDriftDeceleration * Time.fixedDeltaTime);
+                }
             }
         }
 
@@ -172,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
             wallJumpTimer -= Time.fixedDeltaTime;
             isWallJumping = wallJumpTimer > 0f;
         }
-        if (IsPushingAgainstWall()) {
+        if (IsPushingAgainstWall(out CustomTiles wallData)) {
             if (currentVel.y < 0)
             {
                 isWallSliding = true;
@@ -197,21 +214,39 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    public void UpdateFriction(float friction)
+    private bool IsPushingAgainstWall(out CustomTiles data)
     {
-        currentFriction = friction;
-    }
-    private bool IsPushingAgainstWall()
-    {
+        data = null;
         if (isGrounded)
             return false;
-        bool wallRight = IsTileIceAtPosition(WallCheckR.position, out bool iceRight);
-        bool wallLeft = IsTileIceAtPosition(WallCheckL.position, out bool iceLeft);
+        float inputX = move.action.ReadValue<Vector2>().x;
+        if (Mathf.Abs(inputX) < 0.1f) return false;
+        Vector2 rayDir = inputX > 0 ? Vector2.right : Vector2.left ;
 
-        bool pushingRight = wallRight && _moveDirection.x > 0.1f && !iceRight;
-        bool pushingLeft = wallLeft && _moveDirection.x < -0.1f && !iceLeft;
-        wallDir = pushingLeft ? 1 : (pushingRight ? -1 : 0);
-        return pushingLeft || pushingRight;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, 0.6f, groundLayer);
+        if (hit.collider != null)
+        {
+            Vector3Int gridpos = landTileMap.WorldToCell(hit.point + (rayDir * 0.01f));
+            TileBase tile = landTileMap.GetTile(gridpos);
+
+            if (tile is WorldTile worldTile && worldTile.tileType != null)
+            {
+                wallDir = inputX > 0 ? -1 : 1;
+                data = worldTile.tileType;
+                return worldTile.tileType.isWallJumpable;
+            }
+        }
+        
+
+        /* bool wallRight = IsTileIceAtPosition(WallCheckR.position, out bool iceRight);
+        //bool wallLeft = IsTileIceAtPosition(WallCheckL.position, out bool iceLeft);
+
+        //bool pushingRight = wallRight && _moveDirection.x > 0.1f && !iceRight;
+        //bool pushingLeft = wallLeft && _moveDirection.x < -0.1f && !iceLeft;
+        //wallDir = pushingLeft ? 1 : (pushingRight ? -1 : 0);
+        return pushingLeft || pushingRight; */
+
+        return false;
     }
 ///TODO: Put in tile script
     private bool IsTileIceAtPosition(Vector3 checkPos, out bool isIce)
@@ -284,10 +319,11 @@ public class PlayerMovement : MonoBehaviour
             Vector3Int gridPos = landTileMap.WorldToCell(checkPos);
             TileBase tile = landTileMap.GetTile(gridPos);
 
-            if (tile is CustomDataTile data)
+            if (tile is WorldTile worldTile && worldTile != null)
             {
-                isGrounded = (data.types == Tiles.Ground || data.types == Tiles.Slippery);
-
+                isGrounded = true;
+                worldTile.tileType.OnPlayerTouch(this);
+                isTouchingIce = currentFriction < 5f;
             }
             else if (tile != null) 
             {
@@ -300,6 +336,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isTouchingIce = false;
             isGrounded = false;
+            currentFriction = normalFriction;
         }
 
 
@@ -316,58 +353,13 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    /*private void OnCollisionStay2D(Collision2D collision)
     {
 
-
-        Vector3 hitpoint = collision.contacts[0].point;
-        Vector3Int gridPos = landTileMap.WorldToCell(hitpoint - (Vector3)collision.contacts[0].normal *0.1f);   
-        TileBase tile = landTileMap.GetTile(gridPos);
-        if (tile is CustomDataTile data)
-        {
-            HandleTileLogic(data.types, landTileMap, gridPos);
-        }
-
     }
-    void HandleTileLogic(Tiles type, Tilemap tilemap, Vector3Int gridPos)
-    {
-        switch (type)
-        {
-            case Tiles.Ground:
-                isTouchingIce = false;
-                currentFriction = normalFriction;
-                break;
-            case Tiles.Slippery:
-                isTouchingIce = true;
-                currentFriction = iceFriction;
-                break;
-            case Tiles.Sticky:
-                currentFriction = stickyFriction;
-                break;
-            case Tiles.Collectible:
-                if(!collectedTilesPositions.Contains(gridPos))
-                {
-                    collectedTilesPositions.Add(gridPos);
-                }
-                tilemap.SetTile(gridPos, null);
-                break;
-            case Tiles.Spikes:
-                currentFriction = normalFriction;
-                isTouchingIce = false;
-                RespawnPlayer();
-                break;
-            case Tiles.End:
-                print("You Win");
-                int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
-
-                int nextIndex = (currentBuildIndex == 0) ? 1 : 0;;
-                SceneManager.LoadScene(nextIndex);
-                break;
-
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
+  */
+ 
+   /* private void OnTriggerStay2D(Collider2D collision)
     {
 
         Vector3Int gridPos = itemTileMap.WorldToCell(transform.position);
@@ -379,6 +371,7 @@ public class PlayerMovement : MonoBehaviour
             HandleTileLogic(data.types, itemTileMap, gridPos);
         }
     }
+ */
     public void RespawnPlayer()
     {
         transform.position = transform.parent.position;
@@ -458,5 +451,10 @@ public class PlayerMovement : MonoBehaviour
     public void EnableWallSlide()
     {
         isWallSlide = true;
+    }
+
+    public void UpdateFriction(float friction)
+    {
+        currentFriction = friction;
     }
 }

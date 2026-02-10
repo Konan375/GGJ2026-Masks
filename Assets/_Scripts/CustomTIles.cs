@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public abstract class CustomTIles : ScriptableObject
+public abstract class CustomTiles : ScriptableObject
 {
     public float friction = 20f;
+    public float wallSlidingSpeed = 2f;
     public bool isWallJumpable = true;
-    public AudioClip audio;
+    public AudioClip contactAudio;
     public virtual void OnPlayerTouch(PlayerMovement player)
     {
         player.UpdateFriction(friction);
@@ -15,20 +16,9 @@ public abstract class CustomTIles : ScriptableObject
         if (isWallJumpable)
         {
             player.EnableWallSlide();
+            player.UpdateFriction(friction);
         }
 
     }
 }
-[CreateAssetMenu(fileName ="Ground Tile", menuName = "Tiles/GroundTile")]
-public class GroundTile : CustomTIles
-{
 
-}
-[CreateAssetMenu(fileName = "Hazzard Tile", menuName ="Tiles/HazzardTile" )]
-public class HazzardTile : CustomTIles
-{
-    public override void OnPlayerTouch(PlayerMovement player)
-    {
-        player.RespawnPlayer();
-    }
-}
